@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import exchange.exchanges.Exchange;
+import exchange.exchanges.MainExchange;
 import exchange.reader.Reader;
 import exchange.writer.Writer;
 
@@ -21,12 +22,13 @@ public class ExchangeService<T> {
 	}
 	
 	public Exchange<T> getExchange(String itemType) {
-		return exchanges.get(itemType);
+		return exchanges.getOrDefault(itemType, (Exchange<T>) new MainExchange());
 	}
 	
-	public void run(Exchange<T> exchange) {
+	public void run() {
 		List<T> orders = reader.read();
 		for(T order: orders) {
+			Exchange<T> exchange = getExchange("");
 			add(exchange, order);
 			writer.write(executeAll(exchange));
 		}

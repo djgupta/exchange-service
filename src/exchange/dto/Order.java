@@ -47,4 +47,10 @@ public class Order {
 	public void setMatchedOrderId(String matchedOrderId) {
 		this.matchedOrderId = matchedOrderId;
 	}
+	@Override
+	public String toString() {
+		return "Order [orderId=" + orderId + ", time=" + time + ", itemType=" + itemType + ", price=" + price
+				+ ", quantity=" + quantity + ", matchedOrderId=" + matchedOrderId + "]";
+	}
+	
 }
