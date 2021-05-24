@@ -16,7 +16,7 @@ public class ExchangeApp {
 		Map<String, Exchange<Order>> exchanges = new HashMap<>();
 		Reader<Order> reader = new StandardInputReader();
 		Writer<Order> writer = new StandardOutputWriter();
-		ExchangeService<Order> exchangeService = new ExchangeService<>(reader, exchanges, writer);
+		ExchangeService<Order> exchangeService = new ExchangeService<>(reader, exchanges, writer, Order::getItemType);
 		exchangeService.run();
 	}
 

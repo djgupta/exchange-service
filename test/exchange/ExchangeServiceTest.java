@@ -23,7 +23,7 @@ class ExchangeServiceTest {
 	Map<String, Exchange<Order>> exchanges = new HashMap<>();
 	Reader<Order> reader = new StandardInputReader();
 	Writer<Order> writer = new StandardOutputWriter();
-	ExchangeService<Order> exchangeService = new ExchangeService<>(reader, exchanges, writer);
+	ExchangeService<Order> exchangeService = new ExchangeService<>(reader, exchanges, writer, Order::getItemType);
 	
 	@Test
 	@DisplayName("only one order")
@@ -60,7 +60,7 @@ class ExchangeServiceTest {
 		exchangeService.add(exchange, order2);
 		List<Order> result =  exchangeService.executeAll(exchange);
 		assertEquals(1, result.size());
-		assertEquals(order1.getOrderId(), result.get(0).getMatchedOrderId());
+		assertEquals("s1", result.get(0).getMatchedOrderId());
 	}
 	
 	@Test
@@ -84,7 +84,7 @@ class ExchangeServiceTest {
 		exchangeService.add(exchange, order2);
 		
 		Order order3 = new Order();
-		order3.setOrderId("s1");
+		order3.setOrderId("s2");
 		order3.setItemType("apple");
 		order3.setPrice(30);
 		order3.setQuantity(30);
@@ -93,8 +93,8 @@ class ExchangeServiceTest {
 		
 		List<Order> result =  exchangeService.executeAll(exchange);
 		assertEquals(2, result.size());
-		assertEquals(order1.getOrderId(), result.get(0).getMatchedOrderId());
-		assertEquals(order1.getOrderId(), result.get(1).getMatchedOrderId());
+		assertEquals("s1", result.get(0).getMatchedOrderId());
+		assertEquals("s2", result.get(1).getMatchedOrderId());
 	}
 	
 	
@@ -136,9 +136,9 @@ class ExchangeServiceTest {
 		
 		List<Order> result =  exchangeService.executeAll(exchange);
 		assertEquals(2, result.size());
-		assertEquals(order1.getOrderId(), result.get(0).getMatchedOrderId());
+		assertEquals("s2", result.get(0).getMatchedOrderId());
 		assertEquals(order4.getPrice(), result.get(0).getPrice());
-		assertEquals(order2.getOrderId(), result.get(1).getMatchedOrderId());
+		assertEquals("s1", result.get(1).getMatchedOrderId());
 		assertEquals(order3.getPrice(), result.get(1).getPrice());
 	}
 	

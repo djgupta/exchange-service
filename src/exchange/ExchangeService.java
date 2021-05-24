@@ -3,6 +3,7 @@ package exchange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import exchange.exchanges.Exchange;
 import exchange.exchanges.MainExchange;
@@ -14,23 +15,30 @@ public class ExchangeService<T> {
 	Reader<T> reader;
 	Map<String, Exchange<T>> exchanges;
 	Writer<T> writer;
+	Function<T, String> getter;
 	
-	public ExchangeService(Reader<T> reader, Map<String, Exchange<T>> exchanges, Writer<T> writer) {
+	public ExchangeService(Reader<T> reader, Map<String, Exchange<T>> exchanges, Writer<T> writer, Function<T, String> getter) {
 		this.exchanges = exchanges;
 		this.reader = reader;
 		this.writer = writer;
+		this.getter = getter;
 	}
 	
 	public Exchange<T> getExchange(String itemType) {
 		return exchanges.getOrDefault(itemType, (Exchange<T>) new MainExchange());
 	}
 	
+	public Exchange<T> setExchange(String itemType, Exchange<T> exchange) {
+		return exchanges.put(itemType, exchange);
+	}
+	
 	public void run() {
 		List<T> orders = reader.read();
 		for(T order: orders) {
-			Exchange<T> exchange = getExchange("");
+			Exchange<T> exchange = getExchange(getter.apply(order));
 			add(exchange, order);
 			writer.write(executeAll(exchange));
+			setExchange(getter.apply(order), exchange);
 		}
 	}
 	
