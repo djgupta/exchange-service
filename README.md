@@ -1,4 +1,4 @@
-# exchange-service
+# stock-exchange
 
 Objective of the application is to match supply with demand.
 
